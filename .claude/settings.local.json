@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(del \"D:\\\\TECH PROJECTS\\\\eduka\\\\backend\\\\userservice\\\\src\\\\main\\\\java\\\\rw\\\\ac\\\\auca\\\\ecommerce\\\\controller\\\\debug\\\\DebugController.java\")",
+      "Bash(mvnw.cmd compile:*)",
+      "Bash(ls:*)",
+      "Bash(./mvnw.cmd compile:*)",
+      "Bash(PGPASSWORD=trigga psql:*)"
+    ]
+  }
+}
