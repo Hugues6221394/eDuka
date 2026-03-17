@@ -7,7 +7,19 @@
       "Bash(mvnw.cmd compile:*)",
       "Bash(ls:*)",
       "Bash(./mvnw.cmd compile:*)",
-      "Bash(PGPASSWORD=trigga psql:*)"
+      "Bash(PGPASSWORD=trigga psql:*)",
+      "Bash(cd:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(cmd /c \"mvnw.cmd clean compile -q 2>&1\")",
+      "Bash(cmd /c \"mvnw clean compile 2>&1\")",
+      "Bash(cmd /c \"cd /d \"\"D:\\\\TECH PROJECTS\\\\eduka\\\\backend\\\\userservice\"\" && mvnw.cmd clean compile\")",
+      "Bash(cmd.exe /c \"cd /d D:\\\\TECH\")",
+      "Bash(tree:*)",
+      "Bash(./mvnw compile:*)",
+      "Bash(mvn compile:*)",
+      "Bash(where mvn:*)",
+      "Bash(where:*)",
+      "Bash(cmd.exe /c \"cd /d \"\"D:\\\\TECH PROJECTS\\\\eduka\\\\backend\\\\userservice\"\" && mvnw.cmd compile -q\")"
     ]
   }
 }

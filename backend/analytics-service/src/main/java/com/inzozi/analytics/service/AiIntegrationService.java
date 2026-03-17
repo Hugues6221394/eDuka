@@ -1,6 +1,5 @@
 package com.inzozi.analytics.service;
 
-import com.inzozi.analytics.dto.AiAnalysisContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -19,12 +18,15 @@ public class AiIntegrationService {
 
     private final RestTemplate restTemplate;
     private final String aiServiceUrl;
+    private final String internalToken;
 
     public AiIntegrationService(
             RestTemplate restTemplate,
-            @Value("${ai-service.url}") String aiServiceUrl) {
+            @Value("${ai-service.url}") String aiServiceUrl,
+            @Value("${inzozi.internal.token}") String internalToken) {
         this.restTemplate = restTemplate;
         this.aiServiceUrl = aiServiceUrl;
+        this.internalToken = internalToken;
     }
 
     /**
@@ -36,15 +38,12 @@ public class AiIntegrationService {
 
             Map<String, Object> request = Map.of(
                     "user_id", userId,
-                    "role", role.toLowerCase(),
+                    "role", mapRole(role),
                     "question", question,
                     "context", context
             );
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, buildHeaders());
 
             log.info("Calling AI service: {}", url);
             ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
@@ -70,15 +69,12 @@ public class AiIntegrationService {
 
             Map<String, Object> request = Map.of(
                     "user_id", userId,
-                    "role", role.toLowerCase(),
+                    "role", mapRole(role),
                     "analysis_type", analysisType,
                     "context", context
             );
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, buildHeaders());
 
             log.info("Requesting AI analysis: {}", analysisType);
             ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
@@ -103,15 +99,12 @@ public class AiIntegrationService {
 
             Map<String, Object> request = Map.of(
                     "user_id", userId,
-                    "role", role.toLowerCase(),
+                    "role", mapRole(role),
                     "advice_type", adviceType,
                     "context", context
             );
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, buildHeaders());
 
             log.info("Requesting AI advice: {}", adviceType);
             ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
@@ -125,5 +118,23 @@ public class AiIntegrationService {
                     "detail", e.getMessage()
             );
         }
+    }
+
+    private HttpHeaders buildHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (internalToken != null && !internalToken.isBlank()) {
+            headers.set("X-Internal-Token", internalToken);
+        }
+        return headers;
+    }
+
+    private String mapRole(String role) {
+        if (role == null) return "client";
+        String r = role.toLowerCase();
+        if (r.contains("admin")) return "admin";
+        if (r.contains("seller") || r.contains("vendor")) return "vendor";
+        if (r.contains("event_owner") || r.contains("event")) return "vendor";
+        return "client";
     }
 }

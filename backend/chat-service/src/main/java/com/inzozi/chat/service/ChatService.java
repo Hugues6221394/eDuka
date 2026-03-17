@@ -20,6 +20,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
+    private final InternalNotificationClient notificationClient;
 
     /**
      * Get or create chat room between two users
@@ -70,6 +71,9 @@ public class ChatService {
             room.setLastMessageAt(LocalDateTime.now());
             chatRoomRepository.save(room);
         });
+
+        // Send real-time notification to receiver
+        notificationClient.notifyMessage(receiverId, senderId, roomId);
 
         return savedMessage;
     }

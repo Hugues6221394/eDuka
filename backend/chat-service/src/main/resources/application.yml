@@ -4,13 +4,13 @@ server:
 spring:
   application:
     name: chat-service
-  
+
   datasource:
-    url: jdbc:postgresql://localhost:5433/inzozi_space
+    url: jdbc:postgresql://localhost:5432/inzozi_space?currentSchema=public
     username: postgres
     password: ${DB_PASSWORD:trigga}
     driver-class-name: org.postgresql.Driver
-  
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,9 +19,21 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        default_schema: chat_schema
+
+  sql:
+    init:
+      mode: always
 
 logging:
   level:
     com.inzozi.chat: DEBUG
     org.springframework.web.socket: DEBUG
+
+inzozi:
+  internal-token: ${INTERNAL_SERVICE_TOKEN:dev-internal-token}
+  user-service-url: ${USER_SERVICE_URL:http://localhost:8082}
+
+chat:
+  ws:
+    secret: ${CHAT_WS_SECRET:dev-chat-ws-secret}
+    allowed-origins: ${CHAT_WS_ALLOWED_ORIGINS:http://localhost:8082}

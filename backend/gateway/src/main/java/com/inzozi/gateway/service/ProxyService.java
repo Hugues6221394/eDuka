@@ -18,6 +18,7 @@ public class ProxyService {
 
     private final RestTemplate restTemplate;
     private final Map<String, ServiceConfig> serviceConfigs;
+    private final String internalToken;
 
     public ProxyService(RestTemplate restTemplate,
                         @Value("${services.user.url}") String userUrl,
@@ -33,10 +34,12 @@ public class ProxyService {
                         @Value("${services.booking.path}") String bookingPath,
                         @Value("${services.chat.path}") String chatPath,
                         @Value("${services.analytics.path}") String analyticsPath,
-                        @Value("${services.ai.path}") String aiPath) {
+                        @Value("${services.ai.path}") String aiPath,
+                        @Value("${inzozi.internal.token}") String internalToken) {
         
         this.restTemplate = restTemplate;
         this.serviceConfigs = new HashMap<>();
+        this.internalToken = internalToken;
         
         serviceConfigs.put("user", new ServiceConfig(userUrl, userPath));
         serviceConfigs.put("business", new ServiceConfig(businessUrl, businessPath));
@@ -88,6 +91,9 @@ public class ProxyService {
             }
             if (role != null) {
                 headers.add("X-User-Role", role.toString());
+            }
+            if (internalToken != null && !internalToken.isBlank()) {
+                headers.add("X-Internal-Token", internalToken);
             }
 
             // Set content type

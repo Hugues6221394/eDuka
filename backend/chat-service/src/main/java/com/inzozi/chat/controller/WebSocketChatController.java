@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -28,10 +29,17 @@ public class WebSocketChatController {
      * Message destination: /app/chat.sendMessage
      */
     @MessageMapping("/chat.sendMessage")
-    public void sendMessage(@Payload ChatMessageDTO chatMessage) {
+    public void sendMessage(@Payload ChatMessageDTO chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         log.info("Received WebSocket message from {} to room {}", 
                 chatMessage.getSenderId(), chatMessage.getRoomId());
 
+        Object userId = headerAccessor.getSessionAttributes() != null
+                ? headerAccessor.getSessionAttributes().get("userId") : null;
+        if (userId == null) {
+            log.warn("Missing userId in WebSocket session");
+            return;
+        }
+        chatMessage.setSenderId(userId.toString());
         // Save message to database
         Message savedMessage = chatService.saveMessage(
                 chatMessage.getRoomId(),

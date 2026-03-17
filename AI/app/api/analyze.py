@@ -1,7 +1,7 @@
 """
 /ai/analyze endpoint - Data analysis and insights
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
 import logging
 import re
@@ -9,11 +9,12 @@ import re
 from app.schemas import AnalyzeRequest, AnalysisResponse, Anomaly, Suggestion
 from app.core.model_loader import get_model_loader
 from app.core.prompt_engine import get_system_prompt, build_analyze_prompt
+from app.core.security import require_internal_token
 from app.core.permissions import permission_filter
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_internal_token)])
 
 
 @router.post("/analyze", response_model=AnalysisResponse)

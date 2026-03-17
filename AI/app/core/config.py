@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str
     openai_model: str = "gpt-4-turbo-preview"
+    internal_service_token: str = ""
+
+    cors_allowed_origins: str = "http://localhost:8082"
+    allowed_hosts: str = "localhost,127.0.0.1,0.0.0.0"
     
     # Vector Store
     vector_store_type: str = "chromadb"

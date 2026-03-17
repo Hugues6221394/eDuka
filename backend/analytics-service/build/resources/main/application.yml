@@ -4,13 +4,13 @@ server:
 spring:
   application:
     name: analytics-service
-  
+
   datasource:
     url: jdbc:postgresql://localhost:5433/inzozi_space
     username: postgres
     password: ${DB_PASSWORD:trigga}
     driver-class-name: org.postgresql.Driver
-  
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,7 +19,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        default_schema: analytics_schema
 
 # AI Service Configuration
 ai-service:

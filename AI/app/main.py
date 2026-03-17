@@ -3,6 +3,7 @@ FastAPI Main Application
 """
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 import logging
 from datetime import datetime
@@ -30,13 +31,22 @@ app = FastAPI(
 )
 
 # CORS middleware
+origins = [o.strip() for o in settings.cors_allowed_origins.split(',') if o.strip() and o.strip() != '*']
+if not origins:
+    origins = ["http://localhost:8082"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict this
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
+
+# Trusted hosts
+allowed_hosts = [h.strip() for h in settings.allowed_hosts.split(',') if h.strip()]
+if allowed_hosts:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
 
 
 # Exception handler

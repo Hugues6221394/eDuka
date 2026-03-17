@@ -1,18 +1,19 @@
 """
 /ai/ask endpoint - Natural language Q&A
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
 import logging
 
 from app.schemas import AskRequest, AIResponse, Suggestion, ErrorResponse
 from app.core.model_loader import get_model_loader
 from app.core.prompt_engine import get_system_prompt, build_ask_prompt
+from app.core.security import require_internal_token
 from app.core.permissions import permission_filter
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_internal_token)])
 
 
 @router.post("/ask", response_model=AIResponse)
