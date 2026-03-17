@@ -1,4 +1,3 @@
-````markdown
 # Developer Setup (Local Environment)
 
 This repo contains multiple services:
